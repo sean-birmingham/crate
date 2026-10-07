@@ -5,9 +5,9 @@ A record-shop take on a music player. Crate is a Spotify-style streaming app bui
 ## Features
 
 - [x] App shell: sidebar, scrolling main area, player bar
-- [ ] Music catalog: albums, artists, tracks from a local data file
-- [ ] Album pages with tracks listed by side (A1, A2, B1…)
-- [ ] Playback: play/pause, next/previous, seek, volume, shuffle, repeat
+- [x] Music catalog: albums, artists, tracks from a local data file
+- [x] Album pages with tracks listed by side (A1, A2, B1…)
+- [x] Playback: play/pause, next/previous, seek, volume, shuffle, repeat
 - [ ] Search
 - [ ] Liked songs and playlists
 - [ ] Upload your own music

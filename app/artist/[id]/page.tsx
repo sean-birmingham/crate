@@ -2,16 +2,7 @@ import { notFound } from "next/navigation";
 import AlbumCard from "@/components/AlbumCard";
 import TrackList from "@/components/TrackList";
 import { getArtist } from "@/lib/db";
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .filter((word) => word.toLowerCase() !== "the")
-    .map((word) => word[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
+import { initials } from "@/lib/format";
 
 const plural = (count: number, word: string) =>
   `${count} ${word}${count === 1 ? "" : "s"}`;

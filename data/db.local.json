@@ -9,14 +9,16 @@
       "title": "Currents on Audiotree Live",
       "artistId": "currents",
       "year": 2026,
-      "cover": "/music/covers/currents-audiotree-live.jpg"
+      "cover": "/music/covers/currents-audiotree-live.jpg",
+      "genre": "Metalcore"
     },
     {
       "id": "amity-cave-in",
       "title": "Cave In",
       "artistId": "the-amity-affliction",
       "year": 2019,
-      "cover": "/music/covers/amity-cave-in.jpg"
+      "cover": "/music/covers/amity-cave-in.jpg",
+      "genre": "Post-Hardcore"
     }
   ],
   "tracks": [

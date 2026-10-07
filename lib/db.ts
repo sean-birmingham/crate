@@ -66,3 +66,44 @@ export async function getArtist(id: string) {
       .map((t) => toPlayable(db, t)),
   };
 }
+
+export async function search(query: string) {
+  const db = await readDb();
+  const q = query.trim().toLowerCase();
+  const has = (text?: string) => !!text && text.toLowerCase().includes(q);
+  const artistName = (id: string) => db.artists.find((a) => a.id === id)?.name;
+  const albumOf = (id: string) => db.albums.find((a) => a.id === id);
+
+  const tracks = db.tracks
+    .filter(
+      (t) =>
+        has(t.title) ||
+        has(artistName(t.artistId)) ||
+        has(albumOf(t.albumId)?.title) ||
+        has(albumOf(t.albumId)?.genre)
+    )
+    .map((t) => toPlayable(db, t));
+
+  const albums = db.albums
+    .filter((a) => has(a.title) || has(artistName(a.artistId)) || has(a.genre))
+    .map((album) => ({
+      ...album,
+      artist: db.artists.find((a) => a.id === album.artistId)!,
+    }));
+
+  const artists = db.artists.filter((a) => has(a.name));
+
+  return { tracks, albums, artists };
+}
+
+export async function getGenres() {
+  const db = await readDb();
+  const counts = new Map<string, number>();
+  for (const album of db.albums) {
+    if (album.genre)
+      counts.set(album.genre, (counts.get(album.genre) ?? 0) + 1);
+  }
+  return [...counts]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}

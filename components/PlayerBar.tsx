@@ -79,7 +79,7 @@ export default function PlayerBar() {
       </div>
 
       {/* Center: controls + progress */}
-      <div className="flex w-full max-w-[560px] flex-col items-center gap-2 px-8">
+      <div className="flex w-full max-w-140 flex-col items-center gap-2 px-8">
         <div className="flex items-center gap-6">
           <button
             aria-label="Shuffle"
