@@ -7,15 +7,37 @@ import {
   Pause,
   Play,
   Repeat,
+  Repeat1,
   Shuffle,
   SkipBack,
   SkipForward,
   Volume2,
+  VolumeX,
 } from "lucide-react";
-import { usePlayer } from "./player/PlayerProvider";
+import { formatTime } from "@/lib/format";
+import { usePlayer, useProgress } from "./player/PlayerProvider";
 
 export default function PlayerBar() {
-  const { current, isPlaying, toggle, next, previous } = usePlayer();
+  const {
+    current,
+    isPlaying,
+    isShuffled,
+    repeat,
+    volume,
+    muted,
+    toggle,
+    next,
+    previous,
+    seek,
+    setVolume,
+    toggleMute,
+    toggleShuffle,
+    cycleRepeat,
+  } = usePlayer();
+  const { time, duration } = useProgress();
+
+  const toggleClass = (on: boolean) =>
+    on ? "text-accent" : "text-on-deck-soft hover:text-on-deck";
 
   return (
     <footer className="col-span-2 flex items-center bg-deck px-6 text-on-deck">
@@ -28,7 +50,7 @@ export default function PlayerBar() {
               alt=""
               width={56}
               height={56}
-              unoptimized={current.cover?.endsWith(".svg")}
+              unoptimized={current.cover.endsWith(".svg")}
               className="size-14 shrink-0 rounded-sm object-cover"
             />
             <div className="min-w-0">
@@ -56,12 +78,14 @@ export default function PlayerBar() {
         )}
       </div>
 
-      {/* Center: controls + progress (progress/seek come in step 6) */}
+      {/* Center: controls + progress */}
       <div className="flex w-full max-w-[560px] flex-col items-center gap-2 px-8">
         <div className="flex items-center gap-6">
           <button
             aria-label="Shuffle"
-            className="text-on-deck-soft hover:text-on-deck"
+            aria-pressed={isShuffled}
+            onClick={toggleShuffle}
+            className={toggleClass(isShuffled)}
           >
             <Shuffle size={20} strokeWidth={1.75} />
           </button>
@@ -94,28 +118,59 @@ export default function PlayerBar() {
             <SkipForward size={22} fill="currentColor" />
           </button>
           <button
-            aria-label="Repeat"
-            className="text-on-deck-soft hover:text-on-deck"
+            aria-label={`Repeat: ${repeat}`}
+            onClick={cycleRepeat}
+            className={toggleClass(repeat !== "off")}
           >
-            <Repeat size={20} strokeWidth={1.75} />
+            {repeat === "one" ? (
+              <Repeat1 size={20} strokeWidth={1.75} />
+            ) : (
+              <Repeat size={20} strokeWidth={1.75} />
+            )}
           </button>
         </div>
+
         <div className="flex w-full items-center gap-3 font-mono text-body-s text-on-deck-soft">
-          <span>0:00</span>
-          <div className="h-1 flex-1 rounded-full bg-groove">
-            <div className="h-full w-0 rounded-full bg-accent" />
-          </div>
-          <span>0:00</span>
+          <span className="w-10 text-right">{formatTime(time)}</span>
+          <input
+            type="range"
+            aria-label="Seek"
+            min={0}
+            max={duration}
+            step="any"
+            value={Math.min(time, duration)}
+            disabled={!duration}
+            onChange={(e) => seek(Number(e.target.value))}
+            className="h-1 flex-1 cursor-pointer accent-accent disabled:cursor-default"
+          />
+          <span className="w-10">{formatTime(duration)}</span>
         </div>
       </div>
 
-      {/* Right: queue + volume (volume comes in step 6) */}
+      {/* Right: queue + volume */}
       <div className="flex flex-1 items-center justify-end gap-4 text-on-deck-soft">
         <ListMusic size={20} strokeWidth={1.75} />
-        <Volume2 size={20} strokeWidth={1.75} />
-        <div className="h-1 w-24 rounded-full bg-groove">
-          <div className="h-full w-[70%] rounded-full bg-accent" />
-        </div>
+        <button
+          aria-label={muted ? "Unmute" : "Mute"}
+          onClick={toggleMute}
+          className="hover:text-on-deck"
+        >
+          {muted || volume === 0 ? (
+            <VolumeX size={20} strokeWidth={1.75} />
+          ) : (
+            <Volume2 size={20} strokeWidth={1.75} />
+          )}
+        </button>
+        <input
+          type="range"
+          aria-label="Volume"
+          min={0}
+          max={1}
+          step={0.01}
+          value={muted ? 0 : volume}
+          onChange={(e) => setVolume(Number(e.target.value))}
+          className="h-1 w-24 cursor-pointer accent-accent"
+        />
       </div>
     </footer>
   );

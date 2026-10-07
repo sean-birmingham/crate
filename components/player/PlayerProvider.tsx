@@ -1,25 +1,60 @@
 "use client";
 
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { PlayableTrack } from "@/lib/types";
 
+type Repeat = "off" | "all" | "one";
+
 type Player = {
+  audioRef: React.RefObject<HTMLAudioElement | null>;
   current: PlayableTrack | null;
   isPlaying: boolean;
+  isShuffled: boolean;
+  repeat: Repeat;
+  volume: number;
+  muted: boolean;
   play: (queue: PlayableTrack[], startIndex?: number) => void;
   toggle: () => void;
   next: () => void;
   previous: () => void;
+  seek: (seconds: number) => void;
+  setVolume: (volume: number) => void;
+  toggleMute: () => void;
+  toggleShuffle: () => void;
+  cycleRepeat: () => void;
 };
 
 const PlayerContext = createContext<Player | null>(null);
+
+function shuffled<T>(items: T[]) {
+  const copy = [...items];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
 export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [queue, setQueue] = useState<PlayableTrack[]>([]);
   const [index, setIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [original, setOriginal] = useState<PlayableTrack[] | null>(null); // unshuffled queue; null = off
+  const [repeat, setRepeat] = useState<Repeat>("off");
+  const [volume, setVolumeState] = useState(0.8);
+  const [muted, setMuted] = useState(false);
+
   const current = queue[index] ?? null;
+  const isShuffled = original !== null;
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.volume = volume;
+    audio.muted = muted;
+  }, [volume, muted]);
 
   function load(newQueue: PlayableTrack[], newIndex: number) {
     const audio = audioRef.current;
@@ -38,13 +73,21 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }
 
   function play(newQueue: PlayableTrack[], startIndex = 0) {
-    // Clicking the track that's already loaded pauses or resumes it instead of restarting.
-    if (newQueue[startIndex]?.id === current?.id) toggle();
-    else load(newQueue, startIndex);
+    const start = newQueue[startIndex];
+    if (!start) return;
+    if (start.id === current?.id) return toggle();
+
+    if (isShuffled) {
+      setOriginal(newQueue);
+      load([start, ...shuffled(newQueue.filter((t) => t.id !== start.id))], 0);
+    } else {
+      load(newQueue, startIndex);
+    }
   }
 
   function next() {
-    load(queue, index + 1);
+    if (index < queue.length - 1) load(queue, index + 1);
+    else if (repeat === "all") load(queue, 0);
   }
 
   function previous() {
@@ -55,14 +98,77 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     else load(queue, index - 1);
   }
 
+  function handleEnded() {
+    const audio = audioRef.current;
+    if (repeat === "one" && audio) {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+    } else next();
+  }
+
+  function seek(seconds: number) {
+    if (audioRef.current) audioRef.current.currentTime = seconds;
+  }
+
+  function setVolume(value: number) {
+    setVolumeState(value);
+    if (value > 0) setMuted(false);
+  }
+
+  function toggleShuffle() {
+    if (isShuffled) {
+      const restored = original;
+      setQueue(restored);
+      setIndex(
+        Math.max(
+          0,
+          restored.findIndex((t) => t.id === current?.id)
+        )
+      );
+      setOriginal(null);
+    } else {
+      setOriginal(queue);
+      if (current) {
+        setQueue([
+          current,
+          ...shuffled(queue.filter((t) => t.id !== current.id)),
+        ]);
+        setIndex(0);
+      }
+    }
+  }
+
+  function cycleRepeat() {
+    setRepeat((r) => (r === "off" ? "all" : r === "all" ? "one" : "off"));
+  }
+
   return (
-    <PlayerContext value={{ current, isPlaying, play, toggle, next, previous }}>
+    <PlayerContext
+      value={{
+        audioRef,
+        current,
+        isPlaying,
+        isShuffled,
+        repeat,
+        volume,
+        muted,
+        play,
+        toggle,
+        next,
+        previous,
+        seek,
+        setVolume,
+        toggleMute: () => setMuted((m) => !m),
+        toggleShuffle,
+        cycleRepeat,
+      }}
+    >
       {children}
       <audio
         ref={audioRef}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-        onEnded={next}
+        onEnded={handleEnded}
       />
     </PlayerContext>
   );
@@ -73,4 +179,27 @@ export function usePlayer() {
   if (!player)
     throw new Error("usePlayer must be used inside <PlayerProvider>");
   return player;
+}
+
+// Only components that call this re-render on every time update.
+export function useProgress() {
+  const { audioRef } = usePlayer();
+  const [progress, setProgress] = useState({ time: 0, duration: 0 });
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const update = () =>
+      setProgress({ time: audio.currentTime, duration: audio.duration || 0 });
+    const events = [
+      "timeupdate",
+      "loadedmetadata",
+      "durationchange",
+      "emptied",
+    ];
+    events.forEach((e) => audio.addEventListener(e, update));
+    return () => events.forEach((e) => audio.removeEventListener(e, update));
+  }, [audioRef]);
+
+  return progress;
 }
