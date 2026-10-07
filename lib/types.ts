@@ -23,3 +23,5 @@ export type Db = {
   playlists: Playlist[];
   likes: string[];
 };
+
+export type AlbumWithArtist = Album & { artist: Artist };

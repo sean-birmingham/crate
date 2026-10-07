@@ -93,7 +93,7 @@ export default async function AlbumPage({
               </div>
               <ol>
                 {sideTracks.map((t) => (
-                  <TrackRow key={t.id} track={t} artistName={artistName} />
+                  <TrackRow key={t.id} track={t} artist={album.artist} />
                 ))}
               </ol>
             </div>

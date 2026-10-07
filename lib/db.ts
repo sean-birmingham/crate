@@ -36,3 +36,17 @@ export async function getAlbum(id: string) {
     tracks,
   };
 }
+
+export async function getArtist(id: string) {
+  const db = await readDb();
+  const artist = db.artists.find((a) => a.id === id);
+  if (!artist) return null;
+
+  return {
+    ...artist,
+    albums: db.albums
+      .filter((a) => a.artistId === id)
+      .map((album) => ({ ...album, artist })),
+    tracks: db.tracks.filter((t) => t.artistId === id),
+  };
+}

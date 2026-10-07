@@ -1,5 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
+import AlbumCard from "@/components/AlbumCard";
 import { getAlbums } from "@/lib/db";
 
 export default async function Home() {
@@ -22,25 +21,7 @@ export default async function Home() {
         <ul className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-8">
           {albums.map((album) => (
             <li key={album.id}>
-              <Link
-                href={`/album/${album.id}`}
-                className="group flex flex-col gap-3"
-              >
-                <Image
-                  src={album.cover}
-                  alt=""
-                  width={196}
-                  height={196}
-                  unoptimized={album.cover.endsWith(".svg")}
-                  className="aspect-square w-full rounded-sm object-cover shadow-[0_8px_18px_-4px_rgb(30_25_21/0.22)]"
-                />
-                <div>
-                  <p className="text-heading-s group-hover:underline">
-                    {album.title}
-                  </p>
-                  <p className="text-body-s text-soft">{album.artist.name}</p>
-                </div>
-              </Link>
+              <AlbumCard album={album} />
             </li>
           ))}
         </ul>
