@@ -20,3 +20,19 @@ export async function getAlbums() {
     artist: db.artists.find((a) => a.id === album.artistId)!,
   }));
 }
+
+export async function getAlbum(id: string) {
+  const db = await readDb();
+  const album = db.albums.find((a) => a.id === id);
+  if (!album) return null;
+
+  const tracks = db.tracks
+    .filter((t) => t.albumId === album.id)
+    .sort((a, b) => a.side.localeCompare(b.side, undefined, { numeric: true }));
+
+  return {
+    ...album,
+    artist: db.artists.find((a) => a.id === album.artistId)!,
+    tracks,
+  };
+}
