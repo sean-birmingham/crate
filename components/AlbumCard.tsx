@@ -5,7 +5,7 @@ import type { AlbumWithArtist } from "@/lib/types";
 export default function AlbumCard({ album }: { album: AlbumWithArtist }) {
   return (
     <Link href={`/album/${album.id}`} className="group flex flex-col gap-3.5">
-      <div className="relative aspect-228/196 w-full">
+      <div className="relative aspect-[228/196] w-full">
         <Image
           src="/vinyl.svg"
           alt=""

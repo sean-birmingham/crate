@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import AlbumCard from "@/components/AlbumCard";
-import TrackRow from "@/components/TrackRow";
+import TrackList from "@/components/TrackList";
 import { getArtist } from "@/lib/db";
 
 function initials(name: string) {
@@ -43,11 +43,7 @@ export default async function ArtistPage({
 
       <section className="flex flex-col gap-4">
         <h2 className="font-display text-heading-m">Songs</h2>
-        <ol>
-          {artist.tracks.map((track) => (
-            <TrackRow key={track.id} track={track} artist={artist} />
-          ))}
-        </ol>
+        <TrackList tracks={artist.tracks} />
       </section>
 
       <section className="flex flex-col gap-5">

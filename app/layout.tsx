@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Fraunces, DM_Sans, DM_Mono } from "next/font/google";
-import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import { DM_Mono, DM_Sans, Fraunces } from "next/font/google";
 import PlayerBar from "@/components/PlayerBar";
+import Sidebar from "@/components/Sidebar";
+import { PlayerProvider } from "@/components/player/PlayerProvider";
+import "./globals.css";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -30,9 +31,11 @@ export default function RootLayout({
       className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable}`}
     >
       <body className="grid h-dvh grid-cols-[260px_1fr] grid-rows-[minmax(0,1fr)_88px] bg-paper text-ink antialiased">
-        <Sidebar />
-        <main className="overflow-y-auto px-12 py-10">{children}</main>
-        <PlayerBar />
+        <PlayerProvider>
+          <Sidebar />
+          <main className="overflow-y-auto px-12 py-10">{children}</main>
+          <PlayerBar />
+        </PlayerProvider>
       </body>
     </html>
   );
