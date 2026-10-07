@@ -1,0 +1,53 @@
+{
+  "artists": [
+    { "id": "currents", "name": "Currents" },
+    { "id": "the-amity-affliction", "name": "The Amity Affliction" }
+  ],
+  "albums": [
+    {
+      "id": "currents-audiotree-live",
+      "title": "Currents on Audiotree Live",
+      "artistId": "currents",
+      "year": 2026,
+      "cover": "/music/covers/currents-audiotree-live.jpg"
+    },
+    {
+      "id": "amity-cave-in",
+      "title": "Cave In",
+      "artistId": "the-amity-affliction",
+      "year": 2019,
+      "cover": "/music/covers/amity-cave-in.jpg"
+    }
+  ],
+  "tracks": [
+    {
+      "id": "it-only-gets-darker",
+      "title": "It Only Gets Darker (Audiotree Live)",
+      "albumId": "currents-audiotree-live",
+      "artistId": "currents",
+      "side": "A1",
+      "duration": 271,
+      "src": "/music/currents-it-only-gets-darker.mp3"
+    },
+    {
+      "id": "kill-the-ache",
+      "title": "Kill the Ache (Audiotree Live)",
+      "albumId": "currents-audiotree-live",
+      "artistId": "currents",
+      "side": "A2",
+      "duration": 235,
+      "src": "/music/currents-kill-the-ache.mp3"
+    },
+    {
+      "id": "cave-in",
+      "title": "Cave In",
+      "albumId": "amity-cave-in",
+      "artistId": "the-amity-affliction",
+      "side": "A1",
+      "duration": 270,
+      "src": "/music/amity-affliction-cave-in.mp3"
+    }
+  ],
+  "playlists": [],
+  "likes": []
+}

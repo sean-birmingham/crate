@@ -1,0 +1,22 @@
+import { access, readFile } from "node:fs/promises";
+import path from "node:path";
+import type { Db } from "./types";
+
+const LOCAL_DB = path.join(process.cwd(), "data", "db.local.json");
+const PUBLIC_DB = path.join(process.cwd(), "data", "db.json");
+
+export async function readDb(): Promise<Db> {
+  const file = await access(LOCAL_DB).then(
+    () => LOCAL_DB,
+    () => PUBLIC_DB
+  );
+  return JSON.parse(await readFile(file, "utf8"));
+}
+
+export async function getAlbums() {
+  const db = await readDb();
+  return db.albums.map((album) => ({
+    ...album,
+    artist: db.artists.find((a) => a.id === album.artistId)!,
+  }));
+}
