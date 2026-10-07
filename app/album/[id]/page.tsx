@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft, Heart } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import PlayButton from "@/components/PlayButton";
 import TrackList from "@/components/TrackList";
 import { getAlbum } from "@/lib/db";
@@ -30,14 +30,14 @@ export default async function AlbumPage({
       </Link>
 
       <header className="flex items-end gap-12">
-        <div className="relative h-[290px] w-[450px] shrink-0">
+        <div className="relative h-72.5 w-112.5 shrink-0">
           <Image
             src="/vinyl.svg"
             alt=""
             width={276}
             height={276}
             unoptimized
-            className="absolute left-[174px] top-[7px]"
+            className="absolute left-43.5 top-1.75"
           />
           <Image
             src={album.cover}
@@ -45,7 +45,7 @@ export default async function AlbumPage({
             width={290}
             height={290}
             unoptimized={album.cover.endsWith(".svg")}
-            className="relative size-[290px] rounded-sm object-cover shadow-[0_12px_26px_-4px_rgb(30_25_21/0.24)]"
+            className="relative size-72.5 rounded-sm object-cover shadow-[0_12px_26px_-4px_rgb(30_25_21/0.24)]"
           />
         </div>
 

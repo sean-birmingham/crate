@@ -1,24 +1,25 @@
 "use client";
 
 import { createContext, useContext } from "react";
+import type { PlaylistSummary } from "@/lib/types";
 
-type Library = { likedIds: string[]; savedAlbumIds: string[] };
+type Library = {
+  likedIds: string[];
+  savedAlbumIds: string[];
+  playlists: PlaylistSummary[];
+};
 
 const LibraryContext = createContext<Library>({
   likedIds: [],
   savedAlbumIds: [],
+  playlists: [],
 });
 
 export function LibraryProvider({
-  likedIds,
-  savedAlbumIds,
   children,
+  ...library
 }: Library & { children: React.ReactNode }) {
-  return (
-    <LibraryContext value={{ likedIds, savedAlbumIds }}>
-      {children}
-    </LibraryContext>
-  );
+  return <LibraryContext value={library}>{children}</LibraryContext>;
 }
 
 export function useLibrary() {

@@ -1,6 +1,14 @@
 import { access, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
-import type { Album, AlbumWithArtist, Db, PlayableTrack, Track } from "./types";
+import type {
+  Album,
+  AlbumWithArtist,
+  Db,
+  PlayableTrack,
+  Track,
+  Playlist,
+  PlaylistSummary,
+} from "./types";
 
 const LOCAL_DB = path.join(process.cwd(), "data", "db.local.json");
 const PUBLIC_DB = path.join(process.cwd(), "data", "db.json");
@@ -137,5 +145,40 @@ export async function getLibrary() {
       artist: db.artists.find((a) => a.id === album.artistId)!,
     }));
 
-  return { likedIds: db.likes, savedAlbums };
+  return {
+    likedIds: db.likes,
+    savedAlbums,
+    playlists: db.playlists.map((p) => summarize(db, p)),
+  };
+}
+
+// Up to 4 different album covers from a list of track ids.
+function coversFor(db: Db, trackIds: string[]) {
+  const covers = trackIds
+    .map((id) => db.tracks.find((t) => t.id === id))
+    .map((t) => db.albums.find((a) => a.id === t?.albumId)?.cover)
+    .filter((c): c is string => !!c);
+  return [...new Set(covers)].slice(0, 4);
+}
+
+function summarize(db: Db, playlist: Playlist): PlaylistSummary {
+  return {
+    id: playlist.id,
+    name: playlist.name,
+    trackCount: playlist.trackIds.length,
+    covers: coversFor(db, playlist.trackIds),
+  };
+}
+
+export async function getPlaylist(id: string) {
+  const db = await readDb();
+  const playlist = db.playlists.find((p) => p.id === id);
+  if (!playlist) return null;
+
+  const tracks = playlist.trackIds
+    .map((trackId) => db.tracks.find((t) => t.id === trackId))
+    .filter((t): t is Track => t !== undefined)
+    .map((t) => toPlayable(db, t));
+
+  return { ...summarize(db, playlist), tracks };
 }

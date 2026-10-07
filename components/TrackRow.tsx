@@ -3,12 +3,14 @@ import { Pause, Play } from "lucide-react";
 import { formatTime } from "@/lib/format";
 import type { PlayableTrack } from "@/lib/types";
 import LikeButton from "./LikeButton";
+import TrackMenu from "./TrackMenu";
 
 type Props = {
   track: PlayableTrack;
   isCurrent: boolean;
   isPlaying: boolean;
   onPlay: () => void;
+  playlistId?: string;
 };
 
 export default function TrackRow({
@@ -16,13 +18,14 @@ export default function TrackRow({
   isCurrent,
   isPlaying,
   onPlay,
+  playlistId,
 }: Props) {
   const showPause = isCurrent && isPlaying;
 
   return (
     <li
       onDoubleClick={onPlay}
-      className={`group grid grid-cols-[32px_1fr_auto_48px] items-center gap-4 rounded-[10px] px-4 py-2.5 hover:bg-raised ${
+      className={`group grid grid-cols-[32px_1fr_auto_auto_48px] items-center gap-4 rounded-[10px] px-4 py-2.5 hover:bg-raised ${
         isCurrent ? "bg-raised" : ""
       }`}
     >
@@ -61,7 +64,11 @@ export default function TrackRow({
       </div>
 
       <LikeButton id={track.id} title={track.title} hideUntilHover />
-
+      <TrackMenu
+        trackId={track.id}
+        title={track.title}
+        playlistId={playlistId}
+      />
       <span className="text-right font-mono text-body-s text-soft">
         {formatTime(track.duration)}
       </span>

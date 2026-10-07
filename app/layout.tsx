@@ -4,7 +4,7 @@ import { LibraryProvider } from "@/components/LibraryProvider";
 import PlayerBar from "@/components/PlayerBar";
 import Sidebar from "@/components/Sidebar";
 import { PlayerProvider } from "@/components/player/PlayerProvider";
-import { getLibrary, readDb } from "@/lib/db";
+import { getLibrary } from "@/lib/db";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -38,11 +38,13 @@ export default async function RootLayout({
         <LibraryProvider
           likedIds={library.likedIds}
           savedAlbumIds={library.savedAlbums.map((a) => a.id)}
+          playlists={library.playlists}
         >
           <PlayerProvider>
             <Sidebar
               likedCount={library.likedIds.length}
               savedAlbums={library.savedAlbums}
+              playlists={library.playlists}
             />
             <main className="overflow-y-auto px-12 py-10">{children}</main>
             <PlayerBar />
