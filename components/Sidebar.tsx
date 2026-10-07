@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { House, Search, Archive, Upload } from "lucide-react";
+import { House, Search, Archive, Upload, Heart } from "lucide-react";
+import { plural } from "@/lib/format";
+import { AlbumWithArtist } from "@/lib/types";
 
 const links = [
   { href: "/", label: "Home", icon: House },
@@ -10,7 +13,13 @@ const links = [
   { href: "/library", label: "Your crate", icon: Archive },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  likedCount,
+  savedAlbums,
+}: {
+  likedCount: number;
+  savedAlbums: AlbumWithArtist[];
+}) {
   const pathname = usePathname();
 
   return (
@@ -43,16 +52,56 @@ export default function Sidebar() {
           );
         })}
       </nav>
-
-      <section className="flex flex-col gap-2 px-2.5">
-        <h2 className="font-mono text-label uppercase text-faint">
+      <section className="flex flex-col gap-1">
+        <h2 className="px-2.5 pb-1 font-mono text-label uppercase text-faint">
           Your crate
         </h2>
-        <p className="text-body-s text-faint">
-          Your playlists will show up here.
-        </p>
-      </section>
+        <Link
+          href="/liked"
+          className={`flex items-center gap-3 rounded-[10px] p-2 ${pathname === "/liked" ? "bg-paper" : "hover:bg-paper/60"}`}
+        >
+          <span className="grid size-11 shrink-0 place-items-center rounded-sm bg-accent-soft text-accent">
+            <Heart size={20} fill="currentColor" strokeWidth={0} />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-body-m font-medium">
+              Liked songs
+            </span>
+            <span className="block text-body-s text-faint">
+              Playlist · {plural(likedCount, "song")}
+            </span>
+          </span>
+        </Link>
 
+        {savedAlbums.map((album) => (
+          <Link
+            key={album.id}
+            href={`/album/${album.id}`}
+            className={`flex items-center gap-3 rounded-[10px] p-2 ${
+              pathname === `/album/${album.id}`
+                ? "bg-paper"
+                : "hover:bg-paper/60"
+            }`}
+          >
+            <Image
+              src={album.cover}
+              alt=""
+              width={44}
+              height={44}
+              unoptimized={album.cover.endsWith(".svg")}
+              className="size-11 shrink-0 rounded-sm object-cover"
+            />
+            <span className="min-w-0">
+              <span className="block truncate text-body-m font-medium">
+                {album.title}
+              </span>
+              <span className="block truncate text-body-s text-faint">
+                Album · {album.artist.name}
+              </span>
+            </span>
+          </Link>
+        ))}
+      </section>
       <Link
         href="/upload"
         className="mt-auto flex h-11 items-center gap-3.5 px-3.5 text-body-m font-medium text-soft hover:text-ink"

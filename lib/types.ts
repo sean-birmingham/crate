@@ -27,6 +27,7 @@ export type Db = {
   tracks: Track[];
   playlists: Playlist[];
   likes: string[];
+  savedAlbums: string[]; // album ids, newest first
 };
 
 export type AlbumWithArtist = Album & { artist: Artist };

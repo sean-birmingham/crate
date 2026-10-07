@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { formatTime } from "@/lib/format";
 import { usePlayer, useProgress } from "./player/PlayerProvider";
+import LikeButton from "./LikeButton";
 
 export default function PlayerBar() {
   const {
@@ -67,6 +68,11 @@ export default function PlayerBar() {
                 {current.artistName}
               </Link>
             </div>
+            <LikeButton
+              id={current.id}
+              title={current.title}
+              idleClass="text-on-deck-soft hover:text-accent"
+            />
           </>
         ) : (
           <>

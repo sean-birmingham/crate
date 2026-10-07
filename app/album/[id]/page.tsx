@@ -6,6 +6,7 @@ import PlayButton from "@/components/PlayButton";
 import TrackList from "@/components/TrackList";
 import { getAlbum } from "@/lib/db";
 import { formatTime, plural, totalDuration } from "@/lib/format";
+import LikeButton from "@/components/LikeButton";
 
 export default async function AlbumPage({
   params,
@@ -67,12 +68,13 @@ export default async function AlbumPage({
           </p>
           <div className="mt-2 flex items-center gap-4">
             <PlayButton queue={album.tracks} />
-            <button
-              aria-label="Like album"
-              className="text-soft hover:text-accent"
-            >
-              <Heart size={26} strokeWidth={1.75} />
-            </button>
+            <LikeButton
+              kind="album"
+              id={album.id}
+              title={album.title}
+              size={26}
+              idleClass="text-soft hover:text-accent"
+            />
           </div>
         </div>
       </header>

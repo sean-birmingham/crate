@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Heart, Pause, Play } from "lucide-react";
+import { Pause, Play } from "lucide-react";
 import { formatTime } from "@/lib/format";
 import type { PlayableTrack } from "@/lib/types";
+import LikeButton from "./LikeButton";
 
 type Props = {
   track: PlayableTrack;
@@ -59,12 +60,7 @@ export default function TrackRow({
         </Link>
       </div>
 
-      <button
-        aria-label={`Like ${track.title}`}
-        className="text-faint opacity-0 group-hover:opacity-100 focus-visible:opacity-100 hover:text-accent"
-      >
-        <Heart size={20} strokeWidth={1.75} />
-      </button>
+      <LikeButton id={track.id} title={track.title} hideUntilHover />
 
       <span className="text-right font-mono text-body-s text-soft">
         {formatTime(track.duration)}

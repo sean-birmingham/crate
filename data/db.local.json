@@ -1,7 +1,23 @@
 {
+  "playlists": [],
+  "likes": [
+    "cave-in",
+    "kill-the-ache",
+    "it-only-gets-darker"
+  ],
+  "savedAlbums": [
+    "currents-audiotree-live",
+    "amity-cave-in"
+  ],
   "artists": [
-    { "id": "currents", "name": "Currents" },
-    { "id": "the-amity-affliction", "name": "The Amity Affliction" }
+    {
+      "id": "currents",
+      "name": "Currents"
+    },
+    {
+      "id": "the-amity-affliction",
+      "name": "The Amity Affliction"
+    }
   ],
   "albums": [
     {
@@ -49,7 +65,5 @@
       "duration": 270,
       "src": "/music/amity-affliction-cave-in.mp3"
     }
-  ],
-  "playlists": [],
-  "likes": []
+  ]
 }
