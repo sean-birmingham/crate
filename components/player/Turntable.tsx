@@ -12,7 +12,7 @@ export function Turntable({
   isPlaying: boolean;
 }) {
   return (
-    <div className="relative aspect-[640/620] w-full rounded-[28px] border border-groove bg-deck-raised">
+    <div className="relative aspect-640/620 w-full rounded-[28px] border border-groove bg-deck-raised">
       <span className="absolute left-[5%] top-[3.5%] font-display text-heading-m text-on-deck-soft/60">
         Crate
       </span>
@@ -43,7 +43,7 @@ export function Turntable({
         viewBox="0 0 120 280"
         aria-hidden
         className={`absolute left-[65.6%] top-[6.5%] h-[72.3%] w-[30%] origin-[66.7%_15%] transition-transform duration-700 motion-reduce:transition-none ${
-          isPlaying ? "rotate-0" : "-rotate-[22deg]"
+          isPlaying ? "rotate-0" : "rotate-[-22deg]"
         }`}
       >
         <rect x="70" y="4" width="20" height="16" rx="4" fill="#A89B8C" />
@@ -102,7 +102,7 @@ export function Sleeve({
   isPlaying: boolean;
 }) {
   return (
-    <div className="relative mx-auto aspect-[342/300] w-full max-w-sm">
+    <div className="relative mx-auto aspect-342/300 w-full max-w-sm">
       <div
         className={`absolute left-[34.5%] top-[5.3%] aspect-square w-[78.4%] ${spin(isPlaying)}`}
       >

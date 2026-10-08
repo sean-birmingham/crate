@@ -23,7 +23,7 @@ export default async function ArtistPage({
         </div>
         <div className="flex min-w-0 flex-col gap-3">
           <p className="font-mono text-label uppercase text-faint">Artist</p>
-          <h1 className="break-words font-display text-display-l md:text-display-xl">
+          <h1 className="wrap-break-word font-display text-display-l md:text-display-xl">
             {artist.name}
           </h1>
           <p className="text-body-m text-soft">

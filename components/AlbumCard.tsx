@@ -11,7 +11,7 @@ export default function AlbumCard({
 }) {
   return (
     <Link href={`/album/${album.id}`} className="group flex flex-col gap-3.5">
-      <div className="relative aspect-[228/196] w-full">
+      <div className="relative aspect-228/196 w-full">
         <Image
           src="/vinyl.svg"
           alt=""
@@ -19,7 +19,7 @@ export default function AlbumCard({
           height={184}
           unoptimized
           loading={eager ? "eager" : "lazy"}
-          className="absolute right-0 top-[3%] h-[94%] w-auto transition-transform duration-500 group-hover:translate-x-3 group-hover:rotate-90 dark:drop-shadow-[0_0_1px_rgb(243_235_221/0.45)]"
+          className="absolute right-0 top-[3%] h-[94%] w-auto transition-transform duration-500 group-hover:translate-x-3 group-hover:rotate-90 dark:drop-shadow-[0_0_1px_rgb(243_235_221/0.7)]"
         />
         <Image
           src={album.cover}

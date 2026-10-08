@@ -97,7 +97,7 @@ function NowPlayingView() {
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center gap-8 py-6 md:flex-row md:gap-16">
         {/* The record */}
-        <div className="w-full md:w-1/2 md:max-w-[640px]">
+        <div className="w-full md:w-1/2 md:max-w-160">
           <div className="md:hidden">
             <Sleeve cover={current.cover} isPlaying={isPlaying} />
           </div>
@@ -185,7 +185,7 @@ function NowPlayingView() {
             <button
               aria-label={isPlaying ? "Pause" : "Play"}
               onClick={toggle}
-              className="grid size-[72px] place-items-center rounded-full bg-accent text-on-accent md:size-20"
+              className="grid size-18 place-items-center rounded-full bg-accent text-on-accent md:size-20"
             >
               {isPlaying ? (
                 <Pause size={32} fill="currentColor" />

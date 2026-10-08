@@ -32,7 +32,7 @@ export default async function AlbumPage({
 
       <header className="flex flex-col items-start gap-6 md:flex-row md:items-end md:gap-12">
         {/* Sleeve with the record sliding out, scaled to the space available */}
-        <div className="relative aspect-[450/290] w-full max-w-[450px] shrink-0">
+        <div className="relative aspect-450/290 w-full max-w-112.5 shrink-0">
           <Image
             src="/vinyl.svg"
             alt=""
@@ -57,7 +57,7 @@ export default async function AlbumPage({
           <p className="font-mono text-label uppercase text-faint">
             LP · {album.year}
           </p>
-          <h1 className="break-words font-display text-display-l md:text-display-xl">
+          <h1 className="wrap-break-word font-display text-display-l md:text-display-xl">
             {album.title}
           </h1>
           <p className="text-body-m">

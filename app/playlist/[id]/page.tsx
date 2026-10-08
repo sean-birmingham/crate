@@ -29,7 +29,7 @@ export default async function PlaylistPage({
         <div className="flex w-full min-w-0 flex-1 flex-col gap-3">
           <p className="font-mono text-label uppercase text-faint">Playlist</p>
           {READ_ONLY ? (
-            <h1 className="break-words font-display text-display-l md:text-display-xl">
+            <h1 className="wrap-break-word font-display text-display-l md:text-display-xl">
               {playlist.name}
             </h1>
           ) : (

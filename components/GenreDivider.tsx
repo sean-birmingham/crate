@@ -28,7 +28,9 @@ export default function GenreDivider({ name, count, index }: Props) {
         <span className="font-mono text-body-s opacity-75">
           {count} {count === 1 ? "record" : "records"}
         </span>
-        <span className="font-display text-heading-m">{name}</span>
+        <span className="wrap-break-word font-display text-[1.375rem] leading-tight sm:text-heading-m">
+          {name}
+        </span>
       </span>
     </Link>
   );

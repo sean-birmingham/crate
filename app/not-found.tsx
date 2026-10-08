@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="flex flex-col items-start gap-3">
       <p className="font-mono text-label uppercase text-faint">Error 404</p>
       <h1 className="font-display text-display-l">
-        This record isn't in the crate
+        This record isn&apos;t in the crate
       </h1>
       <Link
         href="/"
