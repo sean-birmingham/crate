@@ -20,3 +20,14 @@ export function initials(name: string) {
     .slice(0, 2)
     .toUpperCase();
 }
+
+export function slugify(text: string) {
+  return (
+    text
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "") // strip accents: é → e
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "untitled"
+  );
+}
