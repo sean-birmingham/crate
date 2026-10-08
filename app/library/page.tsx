@@ -3,6 +3,7 @@ import { Heart, Plus } from "lucide-react";
 import AlbumCard from "@/components/AlbumCard";
 import PlaylistCover from "@/components/PlaylistCover";
 import { createPlaylistAndOpen } from "@/lib/actions";
+import { READ_ONLY } from "@/lib/config";
 import { getLibrary } from "@/lib/db";
 import { plural } from "@/lib/format";
 
@@ -49,16 +50,18 @@ export default async function LibraryPage() {
             </li>
           ))}
 
-          <li>
-            <form action={createPlaylistAndOpen}>
-              <button className="group flex w-full flex-col gap-3.5 text-left">
-                <span className="grid aspect-square w-full place-items-center rounded-sm border-2 border-dashed border-line text-faint transition-colors group-hover:border-accent group-hover:text-accent">
-                  <Plus size={40} strokeWidth={1.5} />
-                </span>
-                <span className="text-heading-s">New playlist</span>
-              </button>
-            </form>
-          </li>
+          {!READ_ONLY && (
+            <li>
+              <form action={createPlaylistAndOpen}>
+                <button className="group flex w-full flex-col gap-3.5 text-left">
+                  <span className="grid aspect-square w-full place-items-center rounded-sm border-2 border-dashed border-line text-faint transition-colors group-hover:border-accent group-hover:text-accent">
+                    <Plus size={40} strokeWidth={1.5} />
+                  </span>
+                  <span className="text-heading-s">New playlist</span>
+                </button>
+              </form>
+            </li>
+          )}
         </ul>
       </section>
 

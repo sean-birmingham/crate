@@ -2,11 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import LikeButton from "@/components/LikeButton";
 import PlayButton from "@/components/PlayButton";
 import TrackList from "@/components/TrackList";
+import { READ_ONLY } from "@/lib/config";
 import { getAlbum } from "@/lib/db";
 import { formatTime, plural, totalDuration } from "@/lib/format";
-import LikeButton from "@/components/LikeButton";
 
 export default async function AlbumPage({
   params,
@@ -30,22 +31,23 @@ export default async function AlbumPage({
       </Link>
 
       <header className="flex items-end gap-12">
-        <div className="relative h-72.5 w-112.5 shrink-0">
+        <div className="relative h-[290px] w-[450px] shrink-0">
           <Image
             src="/vinyl.svg"
             alt=""
             width={276}
             height={276}
             unoptimized
-            className="absolute left-43.5 top-1.75"
+            className="absolute left-[174px] top-[7px]"
           />
           <Image
             src={album.cover}
             alt={`${album.title} cover`}
             width={290}
             height={290}
+            loading="eager"
             unoptimized={album.cover.endsWith(".svg")}
-            className="relative size-72.5 rounded-sm object-cover shadow-[0_12px_26px_-4px_rgb(30_25_21/0.24)]"
+            className="relative size-[290px] rounded-sm object-cover shadow-[0_12px_26px_-4px_rgb(30_25_21/0.24)]"
           />
         </div>
 
@@ -68,13 +70,15 @@ export default async function AlbumPage({
           </p>
           <div className="mt-2 flex items-center gap-4">
             <PlayButton queue={album.tracks} />
-            <LikeButton
-              kind="album"
-              id={album.id}
-              title={album.title}
-              size={26}
-              idleClass="text-soft hover:text-accent"
-            />
+            {!READ_ONLY && (
+              <LikeButton
+                kind="album"
+                id={album.id}
+                title={album.title}
+                size={26}
+                idleClass="text-soft hover:text-accent"
+              />
+            )}
           </div>
         </div>
       </header>

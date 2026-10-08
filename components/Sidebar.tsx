@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Archive, Heart, House, Plus, Search, Upload } from "lucide-react";
 import { createPlaylistAndOpen } from "@/lib/actions";
+import { READ_ONLY } from "@/lib/config";
 import { plural } from "@/lib/format";
 import type { AlbumWithArtist, PlaylistSummary } from "@/lib/types";
 import PlaylistCover from "./PlaylistCover";
@@ -62,14 +63,16 @@ export default function Sidebar({ likedCount, savedAlbums, playlists }: Props) {
           <h2 className="font-mono text-label uppercase text-faint">
             Your crate
           </h2>
-          <form action={createPlaylistAndOpen}>
-            <button
-              aria-label="New playlist"
-              className="text-soft hover:text-ink"
-            >
-              <Plus size={20} strokeWidth={1.75} />
-            </button>
-          </form>
+          {!READ_ONLY && (
+            <form action={createPlaylistAndOpen}>
+              <button
+                aria-label="New playlist"
+                className="text-soft hover:text-ink"
+              >
+                <Plus size={20} strokeWidth={1.75} />
+              </button>
+            </form>
+          )}
         </div>
 
         <Link href="/liked" className={itemClass("/liked")}>
@@ -130,13 +133,15 @@ export default function Sidebar({ likedCount, savedAlbums, playlists }: Props) {
         ))}
       </section>
 
-      <Link
-        href="/upload"
-        className="mt-auto flex h-11 items-center gap-3.5 px-3.5 text-body-m font-medium text-soft hover:text-ink"
-      >
-        <Upload size={22} strokeWidth={1.75} />
-        Upload music
-      </Link>
+      {!READ_ONLY && (
+        <Link
+          href="/upload"
+          className="mt-auto flex h-11 items-center gap-3.5 px-3.5 text-body-m font-medium text-soft hover:text-ink"
+        >
+          <Upload size={22} strokeWidth={1.75} />
+          Upload music
+        </Link>
+      )}
     </aside>
   );
 }

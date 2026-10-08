@@ -42,3 +42,4 @@ next-env.d.ts
 
 # Crate: audio stays on your machine (large files, often copyrighted)
 /public/music
+/data/db.local.json

@@ -1,55 +1,161 @@
 {
   "artists": [
-    { "id": "currents", "name": "Currents" },
-    { "id": "the-amity-affliction", "name": "The Amity Affliction" }
+    { "id": "lumen-fields", "name": "Lumen Fields" },
+    { "id": "the-quiet-coast", "name": "The Quiet Coast" },
+    { "id": "neon-harbor", "name": "Neon Harbor" },
+    { "id": "kilowatt-kids", "name": "Kilowatt Kids" }
   ],
   "albums": [
     {
-      "id": "currents-audiotree-live",
-      "title": "Currents on Audiotree Live",
-      "artistId": "currents",
-      "year": 2026,
-      "cover": "/covers/midnight-transit.svg",
-      "genre": "Metalcore"
+      "id": "paper-satellites",
+      "title": "Paper Satellites",
+      "artistId": "lumen-fields",
+      "year": 2023,
+      "cover": "/covers/paper-satellites.svg",
+      "genre": "Dream pop"
     },
     {
-      "id": "amity-cave-in",
-      "title": "Cave In",
-      "artistId": "the-amity-affliction",
-      "year": 2019,
-      "cover": "/covers/oxblood-sessions.svg",
-      "genre": "Post-Hardcore"
+      "id": "tide-tables",
+      "title": "Tide Tables",
+      "artistId": "the-quiet-coast",
+      "year": 2022,
+      "cover": "/covers/tide-tables.svg",
+      "genre": "Lo-fi"
+    },
+    {
+      "id": "midnight-transit",
+      "title": "Midnight Transit",
+      "artistId": "neon-harbor",
+      "year": 2024,
+      "cover": "/covers/midnight-transit.svg",
+      "genre": "Synthwave"
+    },
+    {
+      "id": "overclock",
+      "title": "Overclock",
+      "artistId": "kilowatt-kids",
+      "year": 2025,
+      "cover": "/covers/overclock.svg",
+      "genre": "Electronic"
     }
   ],
   "tracks": [
     {
-      "id": "it-only-gets-darker",
-      "title": "It Only Gets Darker (Audiotree Live)",
-      "albumId": "currents-audiotree-live",
-      "artistId": "currents",
+      "id": "morning-static",
+      "title": "Morning Static",
+      "albumId": "paper-satellites",
+      "artistId": "lumen-fields",
       "side": "A1",
-      "duration": 271,
-      "src": "/music/currents-it-only-gets-darker.mp3"
+      "duration": 43,
+      "src": "/demo/lumen-fields-morning-static.wav"
     },
     {
-      "id": "kill-the-ache",
-      "title": "Kill the Ache (Audiotree Live)",
-      "albumId": "currents-audiotree-live",
-      "artistId": "currents",
+      "id": "paper-satellites-title-track",
+      "title": "Paper Satellites",
+      "albumId": "paper-satellites",
+      "artistId": "lumen-fields",
       "side": "A2",
-      "duration": 235,
-      "src": "/music/currents-kill-the-ache.mp3"
+      "duration": 43,
+      "src": "/demo/lumen-fields-paper-satellites.wav"
     },
     {
-      "id": "cave-in",
-      "title": "Cave In",
-      "albumId": "amity-cave-in",
-      "artistId": "the-amity-affliction",
+      "id": "slow-orbit",
+      "title": "Slow Orbit",
+      "albumId": "paper-satellites",
+      "artistId": "lumen-fields",
+      "side": "B1",
+      "duration": 44,
+      "src": "/demo/lumen-fields-slow-orbit.wav"
+    },
+    {
+      "id": "low-tide",
+      "title": "Low Tide",
+      "albumId": "tide-tables",
+      "artistId": "the-quiet-coast",
       "side": "A1",
-      "duration": 270,
-      "src": "/music/amity-affliction-cave-in.mp3"
+      "duration": 55,
+      "src": "/demo/the-quiet-coast-low-tide.wav"
+    },
+    {
+      "id": "saltwater-letters",
+      "title": "Saltwater Letters",
+      "albumId": "tide-tables",
+      "artistId": "the-quiet-coast",
+      "side": "A2",
+      "duration": 52,
+      "src": "/demo/the-quiet-coast-saltwater-letters.wav"
+    },
+    {
+      "id": "harbor-lights",
+      "title": "Harbor Lights",
+      "albumId": "tide-tables",
+      "artistId": "the-quiet-coast",
+      "side": "B1",
+      "duration": 55,
+      "src": "/demo/the-quiet-coast-harbor-lights.wav"
+    },
+    {
+      "id": "afterglow-drive",
+      "title": "Afterglow Drive",
+      "albumId": "midnight-transit",
+      "artistId": "neon-harbor",
+      "side": "A1",
+      "duration": 39,
+      "src": "/demo/neon-harbor-afterglow-drive.wav"
+    },
+    {
+      "id": "tunnel-lights",
+      "title": "Tunnel Lights",
+      "albumId": "midnight-transit",
+      "artistId": "neon-harbor",
+      "side": "A2",
+      "duration": 37,
+      "src": "/demo/neon-harbor-tunnel-lights.wav"
+    },
+    {
+      "id": "last-train-home",
+      "title": "Last Train Home",
+      "albumId": "midnight-transit",
+      "artistId": "neon-harbor",
+      "side": "B1",
+      "duration": 37,
+      "src": "/demo/neon-harbor-last-train-home.wav"
+    },
+    {
+      "id": "overclock-title-track",
+      "title": "Overclock",
+      "albumId": "overclock",
+      "artistId": "kilowatt-kids",
+      "side": "A1",
+      "duration": 34,
+      "src": "/demo/kilowatt-kids-overclock.wav"
+    },
+    {
+      "id": "pixel-rush",
+      "title": "Pixel Rush",
+      "albumId": "overclock",
+      "artistId": "kilowatt-kids",
+      "side": "A2",
+      "duration": 33,
+      "src": "/demo/kilowatt-kids-pixel-rush.wav"
+    },
+    {
+      "id": "high-score",
+      "title": "High Score",
+      "albumId": "overclock",
+      "artistId": "kilowatt-kids",
+      "side": "B1",
+      "duration": 34,
+      "src": "/demo/kilowatt-kids-high-score.wav"
     }
   ],
-  "playlists": [],
-  "likes": []
+  "playlists": [
+    {
+      "id": "chill-evenings",
+      "name": "Chill Evenings",
+      "trackIds": ["low-tide", "slow-orbit", "harbor-lights", "last-train-home"]
+    }
+  ],
+  "likes": ["afterglow-drive", "saltwater-letters", "pixel-rush"],
+  "savedAlbums": ["midnight-transit"]
 }

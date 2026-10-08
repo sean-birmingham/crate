@@ -14,9 +14,10 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { READ_ONLY } from "@/lib/config";
 import { formatTime } from "@/lib/format";
-import { usePlayer, useProgress } from "./player/PlayerProvider";
 import LikeButton from "./LikeButton";
+import { usePlayer, useProgress } from "./player/PlayerProvider";
 
 export default function PlayerBar() {
   const {
@@ -68,11 +69,13 @@ export default function PlayerBar() {
                 {current.artistName}
               </Link>
             </div>
-            <LikeButton
-              id={current.id}
-              title={current.title}
-              idleClass="text-on-deck-soft hover:text-accent"
-            />
+            {!READ_ONLY && (
+              <LikeButton
+                id={current.id}
+                title={current.title}
+                idleClass="text-on-deck-soft hover:text-accent"
+              />
+            )}
           </>
         ) : (
           <>
@@ -85,7 +88,7 @@ export default function PlayerBar() {
       </div>
 
       {/* Center: controls + progress */}
-      <div className="flex w-full max-w-140 flex-col items-center gap-2 px-8">
+      <div className="flex w-full max-w-[560px] flex-col items-center gap-2 px-8">
         <div className="flex items-center gap-6">
           <button
             aria-label="Shuffle"

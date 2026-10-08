@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "35mb",
     },
   },
+  // Make sure the server functions on Vercel include the catalog file.
+  outputFileTracingIncludes: {
+    "/**": ["./data/db.json"],
+  },
   turbopack: {
     rules: {
       "*.css": {

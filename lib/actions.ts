@@ -4,6 +4,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { READ_ONLY } from "./config";
 import { readDb, writeDb } from "./db";
 import { slugify } from "./format";
 import type { Album, Artist, Db } from "./types";
@@ -15,6 +16,7 @@ const toggled = (list: string[], id: string) =>
   list.includes(id) ? list.filter((x) => x !== id) : [id, ...list];
 
 async function save(db: Db) {
+  if (READ_ONLY) return; // the hosted demo can't write files
   await writeDb(db);
   revalidatePath("/", "layout"); // refresh every page
 }
@@ -52,6 +54,7 @@ export async function createPlaylist(trackIds: string[] = []) {
 }
 
 export async function createPlaylistAndOpen() {
+  if (READ_ONLY) return; // nothing was saved, so there's no playlist to open
   const id = await createPlaylist();
   redirect(`/playlist/${id}`);
 }
@@ -123,6 +126,9 @@ export async function uploadTrack(
   _prev: UploadState,
   formData: FormData
 ): Promise<UploadState> {
+  if (READ_ONLY)
+    return { error: "Uploads are switched off in the online demo." };
+
   const text = (key: string) =>
     String(formData.get(key) ?? "")
       .trim()

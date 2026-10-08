@@ -1,4 +1,5 @@
 import UploadForm from "@/components/UploadForm";
+import { READ_ONLY } from "@/lib/config";
 
 export default function UploadPage() {
   return (
@@ -10,7 +11,14 @@ export default function UploadPage() {
           only; they stay out of Git and off the web.
         </p>
       </header>
-      <UploadForm />
+      {READ_ONLY ? (
+        <p className="max-w-xl text-body-m text-soft">
+          Uploading is switched off in the online demo. Clone the repo and run
+          it locally to add your own music.
+        </p>
+      ) : (
+        <UploadForm />
+      )}
     </div>
   );
 }

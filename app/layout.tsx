@@ -4,6 +4,7 @@ import { LibraryProvider } from "@/components/LibraryProvider";
 import PlayerBar from "@/components/PlayerBar";
 import Sidebar from "@/components/Sidebar";
 import { PlayerProvider } from "@/components/player/PlayerProvider";
+import { READ_ONLY } from "@/lib/config";
 import { getLibrary } from "@/lib/db";
 import "./globals.css";
 
@@ -46,7 +47,16 @@ export default async function RootLayout({
               savedAlbums={library.savedAlbums}
               playlists={library.playlists}
             />
-            <main className="overflow-y-auto px-12 py-10">{children}</main>
+            <main className="overflow-y-auto px-12 py-10">
+              {READ_ONLY && (
+                <p className="mb-8 rounded-xl bg-accent-soft px-4 py-3 text-body-s">
+                  You&apos;re viewing the online demo. Likes, playlists and
+                  uploads are switched off here; run Crate locally for the full
+                  app.
+                </p>
+              )}
+              {children}
+            </main>
             <PlayerBar />
           </PlayerProvider>
         </LibraryProvider>

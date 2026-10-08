@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Pause, Play } from "lucide-react";
+import { READ_ONLY } from "@/lib/config";
 import { formatTime } from "@/lib/format";
 import type { PlayableTrack } from "@/lib/types";
 import LikeButton from "./LikeButton";
@@ -25,7 +26,7 @@ export default function TrackRow({
   return (
     <li
       onDoubleClick={onPlay}
-      className={`group grid grid-cols-[32px_1fr_auto_auto_48px] items-center gap-4 rounded-[10px] px-4 py-2.5 hover:bg-raised ${
+      className={`group grid grid-cols-[32px_1fr_auto_48px] items-center gap-4 rounded-[10px] px-4 py-2.5 hover:bg-raised ${
         isCurrent ? "bg-raised" : ""
       }`}
     >
@@ -63,12 +64,19 @@ export default function TrackRow({
         </Link>
       </div>
 
-      <LikeButton id={track.id} title={track.title} hideUntilHover />
-      <TrackMenu
-        trackId={track.id}
-        title={track.title}
-        playlistId={playlistId}
-      />
+      <div className="flex items-center gap-4">
+        {!READ_ONLY && (
+          <>
+            <LikeButton id={track.id} title={track.title} hideUntilHover />
+            <TrackMenu
+              trackId={track.id}
+              title={track.title}
+              playlistId={playlistId}
+            />
+          </>
+        )}
+      </div>
+
       <span className="text-right font-mono text-body-s text-soft">
         {formatTime(track.duration)}
       </span>
