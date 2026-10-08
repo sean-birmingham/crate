@@ -8,6 +8,7 @@ import type {
   Track,
   Playlist,
   PlaylistSummary,
+  TopResult,
 } from "./types";
 
 const LOCAL_DB = path.join(process.cwd(), "data", "db.local.json");
@@ -40,6 +41,7 @@ function toPlayable(db: Db, track: Track): PlayableTrack {
   return {
     ...track,
     artistName: artist?.name ?? "Unknown artist",
+    albumTitle: album?.title ?? "",
     cover: album?.cover ?? "/vinyl.svg",
   };
 }
@@ -112,7 +114,43 @@ export async function search(query: string) {
 
   const artists = db.artists.filter((a) => has(a.name));
 
-  return { tracks, albums, artists };
+  // The single best match for the Top result card:
+  // exact > starts with > contains. Ties: artist, then album, then song, then genre.
+  const rank = (text?: string) => {
+    const t = text?.toLowerCase();
+    if (!t) return 0;
+    return t === q ? 3 : t.startsWith(q) ? 2 : t.includes(q) ? 1 : 0;
+  };
+  const genreNames = [
+    ...new Set(db.albums.map((a) => a.genre).filter((g): g is string => !!g)),
+  ];
+  const candidates: { score: number; result: TopResult }[] = [
+    ...artists.map((artist) => ({
+      score: rank(artist.name),
+      result: { kind: "artist", artist } as const,
+    })),
+    ...albums.map((album) => ({
+      score: rank(album.title),
+      result: { kind: "album", album } as const,
+    })),
+    ...tracks.map((track) => ({
+      score: rank(track.title),
+      result: { kind: "track", track } as const,
+    })),
+    ...genreNames.map((name) => ({
+      score: rank(name),
+      result: {
+        kind: "genre",
+        name,
+        albumCount: db.albums.filter((a) => a.genre === name).length,
+      } as const,
+    })),
+  ];
+  const top =
+    candidates.filter((c) => c.score > 0).sort((a, b) => b.score - a.score)[0]
+      ?.result ?? null;
+
+  return { tracks, albums, artists, top };
 }
 
 export async function getGenres() {

@@ -32,7 +32,17 @@ export type Db = {
 
 export type AlbumWithArtist = Album & { artist: Artist };
 
-export type PlayableTrack = Track & { artistName: string; cover: string };
+export type PlayableTrack = Track & {
+  artistName: string;
+  albumTitle: string;
+  cover: string;
+};
+
+export type TopResult =
+  | { kind: "artist"; artist: Artist }
+  | { kind: "album"; album: AlbumWithArtist }
+  | { kind: "track"; track: PlayableTrack }
+  | { kind: "genre"; name: string; albumCount: number };
 
 export type PlaylistSummary = {
   id: string;

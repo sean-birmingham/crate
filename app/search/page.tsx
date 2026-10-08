@@ -1,10 +1,9 @@
-import Link from "next/link";
 import AlbumCard from "@/components/AlbumCard";
 import GenreDivider from "@/components/GenreDivider";
 import SearchField from "@/components/SearchField";
+import TopResultCard from "@/components/TopResultCard";
 import TrackList from "@/components/TrackList";
 import { getGenres, search } from "@/lib/db";
-import { initials } from "@/lib/format";
 
 export default async function SearchPage({
   searchParams,
@@ -15,13 +14,12 @@ export default async function SearchPage({
   const query = q.trim();
   const results = query ? await search(query) : null;
   const genres = query ? [] : await getGenres();
-
-  const top = results?.artists[0];
   const isEmpty =
     results &&
     !results.tracks.length &&
     !results.albums.length &&
     !results.artists.length;
+  const source = `Search: “${query}”`;
 
   return (
     <div className="flex flex-col gap-10">
@@ -30,7 +28,7 @@ export default async function SearchPage({
       {!query && (
         <section className="flex flex-col gap-5">
           <h2 className="font-display text-heading-m">Browse the crates</h2>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-x-8 gap-y-6">
+          <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-x-5 gap-y-6 sm:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] sm:gap-x-8">
             {genres.map((genre, i) => (
               <li key={genre.name}>
                 <GenreDivider name={genre.name} count={genre.count} index={i} />
@@ -43,37 +41,26 @@ export default async function SearchPage({
       {isEmpty && (
         <p className="text-body-m text-soft">
           Nothing in the crate matches &ldquo;{query}&rdquo;. Try an artist,
-          album or song title.
+          album, song or genre.
         </p>
       )}
 
       {results && !isEmpty && (
         <>
-          <div className="grid grid-cols-[380px_1fr] gap-10">
-            {top && (
+          <div className="grid gap-10 lg:grid-cols-[380px_minmax(0,1fr)]">
+            {results.top && (
               <section className="flex flex-col gap-4">
                 <h2 className="font-display text-heading-m">Top result</h2>
-                <Link
-                  href={`/artist/${top.id}`}
-                  className="flex flex-col gap-4 rounded-[20px] border border-line bg-raised p-7 transition-colors hover:bg-paper"
-                >
-                  <span className="grid size-28 place-items-center rounded-full bg-accent font-display text-display-l text-on-deck">
-                    {initials(top.name)}
-                  </span>
-                  <span className="font-display text-display-l">
-                    {top.name}
-                  </span>
-                  <span className="self-start rounded-full bg-sunken px-3 py-1.5 font-mono text-label uppercase text-soft">
-                    Artist
-                  </span>
-                </Link>
+                <TopResultCard result={results.top} tracks={results.tracks} />
               </section>
             )}
-
             {results.tracks.length > 0 && (
-              <section className="col-start-2 flex min-w-0 flex-col gap-4">
+              <section className="flex min-w-0 flex-col gap-4 lg:col-start-2">
                 <h2 className="font-display text-heading-m">Songs</h2>
-                <TrackList tracks={results.tracks.slice(0, 5)} />
+                <TrackList
+                  tracks={results.tracks.slice(0, 5)}
+                  source={source}
+                />
               </section>
             )}
           </div>
@@ -81,7 +68,7 @@ export default async function SearchPage({
           {results.albums.length > 0 && (
             <section className="flex flex-col gap-5">
               <h2 className="font-display text-heading-m">Albums</h2>
-              <ul className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-8">
+              <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-6 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] sm:gap-8">
                 {results.albums.map((album) => (
                   <li key={album.id}>
                     <AlbumCard album={album} />
