@@ -8,12 +8,14 @@ type Props = {
   tracks: PlayableTrack[];
   queue?: PlayableTrack[]; // what keeps playing afterwards; defaults to the tracks shown
   playlistId?: string; // set on playlist pages, to offer "Remove from this playlist"
+  source?: string; // shown as "Playing from …"
 };
 
 export default function TrackList({
   tracks,
   queue = tracks,
   playlistId,
+  source,
 }: Props) {
   const { current, isPlaying, play } = usePlayer();
 
@@ -29,7 +31,8 @@ export default function TrackList({
           onPlay={() =>
             play(
               queue,
-              queue.findIndex((t) => t.id === track.id)
+              queue.findIndex((t) => t.id === track.id),
+              source
             )
           }
         />

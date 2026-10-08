@@ -4,11 +4,11 @@ const COLORS = [
   { bg: "bg-teal", text: "text-on-deck" },
   { bg: "bg-oxblood", text: "text-on-deck" },
   { bg: "bg-cobalt", text: "text-on-deck" },
-  { bg: "bg-mustard", text: "text-ink" },
+  { bg: "bg-mustard", text: "text-deck" },
   { bg: "bg-olive", text: "text-on-deck" },
-  { bg: "bg-blush", text: "text-ink" },
+  { bg: "bg-blush", text: "text-deck" },
   { bg: "bg-deck", text: "text-on-deck" },
-  { bg: "bg-accent", text: "text-on-deck" },
+  { bg: "bg-accent", text: "text-on-accent" },
 ];
 
 type Props = { name: string; count: number; index: number };

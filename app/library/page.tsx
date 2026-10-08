@@ -1,31 +1,40 @@
 import Link from "next/link";
-import { Heart, Plus } from "lucide-react";
+import { Heart, Plus, Upload } from "lucide-react";
 import AlbumCard from "@/components/AlbumCard";
 import PlaylistCover from "@/components/PlaylistCover";
 import { createPlaylistAndOpen } from "@/lib/actions";
 import { READ_ONLY } from "@/lib/config";
 import { getLibrary } from "@/lib/db";
 import { plural } from "@/lib/format";
-
-const grid = "grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-8";
+import { cardGrid } from "@/lib/ui";
 
 export default async function LibraryPage() {
   const { likedIds, playlists, savedAlbums } = await getLibrary();
 
   return (
-    <div className="flex flex-col gap-12">
-      <header className="flex flex-col gap-2">
-        <h1 className="font-display text-display-l">Your crate</h1>
-        <p className="text-body-m text-soft">
-          {plural(playlists.length, "playlist")} ·{" "}
-          {plural(savedAlbums.length, "album")} ·{" "}
-          {plural(likedIds.length, "liked song")}
-        </p>
+    <div className="flex flex-col gap-10 md:gap-12">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="font-display text-display-l">Your crate</h1>
+          <p className="text-body-m text-soft">
+            {plural(playlists.length, "playlist")} ·{" "}
+            {plural(savedAlbums.length, "album")} ·{" "}
+            {plural(likedIds.length, "liked song")}
+          </p>
+        </div>
+        {!READ_ONLY && (
+          <Link
+            href="/upload"
+            className="flex items-center gap-2 rounded-full border border-line px-4 py-2 text-body-m font-medium hover:border-ink md:hidden"
+          >
+            <Upload size={18} strokeWidth={1.75} /> Upload music
+          </Link>
+        )}
       </header>
 
       <section className="flex flex-col gap-5">
         <h2 className="font-display text-heading-m">Playlists</h2>
-        <ul className={grid}>
+        <ul className={cardGrid}>
           <li>
             <Tile
               href="/liked"
@@ -68,7 +77,7 @@ export default async function LibraryPage() {
       <section className="flex flex-col gap-5">
         <h2 className="font-display text-heading-m">Albums</h2>
         {savedAlbums.length > 0 ? (
-          <ul className={grid}>
+          <ul className={cardGrid}>
             {savedAlbums.map((album) => (
               <li key={album.id}>
                 <AlbumCard album={album} />

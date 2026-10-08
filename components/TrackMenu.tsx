@@ -51,7 +51,11 @@ export default function TrackMenu({ trackId, title, playlistId }: Props) {
         aria-label={`More options for ${title}`}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className={`text-faint hover:text-ink ${open ? "" : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100"}`}
+        className={`text-faint hover:text-ink ${
+          open
+            ? ""
+            : "can-hover:opacity-0 can-hover:group-hover:opacity-100 focus-visible:opacity-100"
+        }`}
       >
         <MoreHorizontal size={20} />
       </button>
@@ -59,7 +63,7 @@ export default function TrackMenu({ trackId, title, playlistId }: Props) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-20 mt-2 w-60 rounded-xl border border-line bg-raised p-1.5 shadow-[0_12px_32px_-8px_rgb(30_25_21/0.3)]"
+          className="absolute right-0 top-full z-20 mt-2 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-line bg-raised p-1.5 shadow-[0_12px_32px_-8px_rgb(0_0_0/0.3)]"
         >
           <p className="px-3 pb-1 pt-2 font-mono text-label uppercase text-faint">
             Add to playlist

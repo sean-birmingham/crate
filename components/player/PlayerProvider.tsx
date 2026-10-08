@@ -8,12 +8,18 @@ type Repeat = "off" | "all" | "one";
 type Player = {
   audioRef: React.RefObject<HTMLAudioElement | null>;
   current: PlayableTrack | null;
+  queue: PlayableTrack[];
+  index: number;
+  source: string | null;
   isPlaying: boolean;
   isShuffled: boolean;
   repeat: Repeat;
   volume: number;
   muted: boolean;
-  play: (queue: PlayableTrack[], startIndex?: number) => void;
+  nowPlayingOpen: boolean;
+  setNowPlayingOpen: (open: boolean) => void;
+  play: (queue: PlayableTrack[], startIndex?: number, source?: string) => void;
+  jumpTo: (index: number) => void;
   toggle: () => void;
   next: () => void;
   previous: () => void;
@@ -28,7 +34,6 @@ const PlayerContext = createContext<Player | null>(null);
 
 function shuffled<T>(items: T[]) {
   const copy = [...items];
-
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [copy[i], copy[j]] = [copy[j], copy[i]];
@@ -40,11 +45,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [queue, setQueue] = useState<PlayableTrack[]>([]);
   const [index, setIndex] = useState(0);
+  const [source, setSource] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [original, setOriginal] = useState<PlayableTrack[] | null>(null); // unshuffled queue; null = off
+  const [original, setOriginal] = useState<PlayableTrack[] | null>(null); // unshuffled order; null = shuffle off
   const [repeat, setRepeat] = useState<Repeat>("off");
   const [volume, setVolumeState] = useState(0.8);
   const [muted, setMuted] = useState(false);
+  const [nowPlayingOpen, setNowPlayingOpen] = useState(false);
 
   const current = queue[index] ?? null;
   const isShuffled = original !== null;
@@ -62,7 +69,7 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setQueue(newQueue);
     setIndex(newIndex);
     audio.src = newQueue[newIndex].src;
-    audio.play().catch(() => {}); // ignore "interrupted" errors when skipping quickly
+    audio.play().catch(() => {});
   }
 
   function toggle() {
@@ -72,17 +79,22 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     else audio.pause();
   }
 
-  function play(newQueue: PlayableTrack[], startIndex = 0) {
+  function play(newQueue: PlayableTrack[], startIndex = 0, newSource?: string) {
     const start = newQueue[startIndex];
     if (!start) return;
     if (start.id === current?.id) return toggle();
 
+    setSource(newSource ?? null);
     if (isShuffled) {
       setOriginal(newQueue);
       load([start, ...shuffled(newQueue.filter((t) => t.id !== start.id))], 0);
     } else {
       load(newQueue, startIndex);
     }
+  }
+
+  function jumpTo(newIndex: number) {
+    load(queue, newIndex);
   }
 
   function next() {
@@ -93,7 +105,6 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   function previous() {
     const audio = audioRef.current;
     if (!audio) return;
-    // Like every music app: restart the song if it's been playing a few seconds, otherwise go back one.
     if (audio.currentTime > 3 || index === 0) audio.currentTime = 0;
     else load(queue, index - 1);
   }
@@ -103,7 +114,9 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     if (repeat === "one" && audio) {
       audio.currentTime = 0;
       audio.play().catch(() => {});
-    } else next();
+    } else {
+      next();
+    }
   }
 
   function seek(seconds: number) {
@@ -147,12 +160,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
       value={{
         audioRef,
         current,
+        queue,
+        index,
+        source,
         isPlaying,
         isShuffled,
         repeat,
         volume,
         muted,
+        nowPlayingOpen,
+        setNowPlayingOpen,
         play,
+        jumpTo,
         toggle,
         next,
         previous,

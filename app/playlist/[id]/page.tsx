@@ -21,13 +21,17 @@ export default async function PlaylistPage({
   const hasTracks = playlist.tracks.length > 0;
 
   return (
-    <div className="flex flex-col gap-10">
-      <header className="flex items-end gap-8">
-        <PlaylistCover covers={playlist.covers} size={208} />
-        <div className="flex min-w-0 flex-1 flex-col gap-3">
+    <div className="flex flex-col gap-8 md:gap-10">
+      <header className="flex flex-col items-start gap-6 sm:flex-row sm:items-end sm:gap-8">
+        <div className="w-40 shrink-0 sm:w-52">
+          <PlaylistCover covers={playlist.covers} />
+        </div>
+        <div className="flex w-full min-w-0 flex-1 flex-col gap-3">
           <p className="font-mono text-label uppercase text-faint">Playlist</p>
           {READ_ONLY ? (
-            <h1 className="font-display text-display-xl">{playlist.name}</h1>
+            <h1 className="break-words font-display text-display-l md:text-display-xl">
+              {playlist.name}
+            </h1>
           ) : (
             <PlaylistTitle id={playlist.id} name={playlist.name} />
           )}
@@ -36,7 +40,9 @@ export default async function PlaylistPage({
             {hasTracks && `, ${minutes} min`}
           </p>
           <div className="mt-2 flex items-center gap-4">
-            {hasTracks && <PlayButton queue={playlist.tracks} />}
+            {hasTracks && (
+              <PlayButton queue={playlist.tracks} source={playlist.name} />
+            )}
             {!READ_ONLY && (
               <DeletePlaylistButton id={playlist.id} name={playlist.name} />
             )}
@@ -45,7 +51,11 @@ export default async function PlaylistPage({
       </header>
 
       {hasTracks ? (
-        <TrackList tracks={playlist.tracks} playlistId={playlist.id} />
+        <TrackList
+          tracks={playlist.tracks}
+          playlistId={playlist.id}
+          source={playlist.name}
+        />
       ) : (
         <p className="text-body-m text-soft">
           {READ_ONLY

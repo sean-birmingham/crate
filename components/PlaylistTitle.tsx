@@ -54,13 +54,15 @@ export default function PlaylistTitle({
         aria-label="Playlist name"
         maxLength={100}
         className={`min-w-0 flex-1 bg-transparent font-display outline-none ${
-          value.length > 18 ? "text-display-l" : "text-display-xl"
+          value.length > 18
+            ? "text-heading-m md:text-display-l"
+            : "text-display-l md:text-display-xl"
         }`}
       />
       <Pencil
         size={22}
         aria-hidden
-        className="shrink-0 text-faint opacity-0 group-hover:opacity-100"
+        className="shrink-0 text-faint can-hover:opacity-0 can-hover:group-hover:opacity-100"
       />
     </label>
   );

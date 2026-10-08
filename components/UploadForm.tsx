@@ -209,7 +209,7 @@ export default function UploadForm() {
 
       <button
         disabled={!audio || isReading || isPending}
-        className="self-start rounded-full bg-accent px-6 py-3 text-heading-s text-on-deck disabled:opacity-50"
+        className="self-start rounded-full bg-accent px-6 py-3 text-heading-s text-on-accent disabled:opacity-50"
       >
         {isPending ? "Uploading…" : "Add to crate"}
       </button>
@@ -233,7 +233,7 @@ function Field({ label, onChange, ...rest }: FieldProps) {
       <input
         onChange={(e) => onChange(e.target.value)}
         {...rest}
-        className="h-12 rounded-xl bg-sunken px-4 text-body-m outline-none placeholder:text-faint focus:ring-2 focus:ring-accent"
+        className="h-12 min-w-0 rounded-xl bg-sunken px-4 text-body-m outline-none placeholder:text-faint focus:ring-2 focus:ring-accent"
       />
     </label>
   );

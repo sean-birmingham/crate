@@ -23,10 +23,17 @@ export default function TrackRow({
 }: Props) {
   const showPause = isCurrent && isPlaying;
 
+  // On touch screens a single tap on the row plays it (desktop keeps double-click).
+  function handleClick(e: React.MouseEvent) {
+    const onControl = (e.target as HTMLElement).closest("a, button");
+    if (!onControl && window.matchMedia("(hover: none)").matches) onPlay();
+  }
+
   return (
     <li
+      onClick={handleClick}
       onDoubleClick={onPlay}
-      className={`group grid grid-cols-[32px_1fr_auto_48px] items-center gap-4 rounded-[10px] px-4 py-2.5 hover:bg-raised ${
+      className={`group grid grid-cols-[28px_1fr_auto_44px] items-center gap-3 rounded-[10px] px-2 py-2.5 hover:bg-raised sm:grid-cols-[32px_1fr_auto_48px] sm:gap-4 sm:px-4 ${
         isCurrent ? "bg-raised" : ""
       }`}
     >
@@ -64,7 +71,7 @@ export default function TrackRow({
         </Link>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         {!READ_ONLY && (
           <>
             <LikeButton id={track.id} title={track.title} hideUntilHover />

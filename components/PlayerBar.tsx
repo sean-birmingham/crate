@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ListMusic,
+  Maximize2,
   Pause,
   Play,
   Repeat,
@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { READ_ONLY } from "@/lib/config";
 import { formatTime } from "@/lib/format";
+import GrooveSlider from "./GrooveSlider";
 import LikeButton from "./LikeButton";
 import { usePlayer, useProgress } from "./player/PlayerProvider";
 
@@ -35,6 +36,7 @@ export default function PlayerBar() {
     toggleMute,
     toggleShuffle,
     cycleRepeat,
+    setNowPlayingOpen,
   } = usePlayer();
   const { time, duration } = useProgress();
 
@@ -42,19 +44,26 @@ export default function PlayerBar() {
     on ? "text-accent" : "text-on-deck-soft hover:text-on-deck";
 
   return (
-    <footer className="col-span-2 flex items-center bg-deck px-6 text-on-deck">
+    // Tablet and desktop only; phones get the mini player in MobileDock.
+    <footer className="col-span-2 hidden items-center bg-deck px-4 text-on-deck md:flex lg:px-6 dark:border-t dark:border-line">
       {/* Left: what's playing */}
       <div className="flex min-w-0 flex-1 items-center gap-3.5">
         {current ? (
           <>
-            <Image
-              src={current.cover}
-              alt=""
-              width={56}
-              height={56}
-              unoptimized={current.cover.endsWith(".svg")}
-              className="size-14 shrink-0 rounded-sm object-cover"
-            />
+            <button
+              onClick={() => setNowPlayingOpen(true)}
+              aria-label="Open now playing"
+              className="shrink-0 rounded-sm transition-transform hover:scale-105"
+            >
+              <Image
+                src={current.cover}
+                alt=""
+                width={56}
+                height={56}
+                unoptimized={current.cover.endsWith(".svg")}
+                className="size-14 rounded-sm object-cover"
+              />
+            </button>
             <div className="min-w-0">
               <Link
                 href={`/album/${current.albumId}`}
@@ -88,7 +97,7 @@ export default function PlayerBar() {
       </div>
 
       {/* Center: controls + progress */}
-      <div className="flex w-full max-w-[560px] flex-col items-center gap-2 px-8">
+      <div className="flex w-full max-w-[560px] flex-col items-center gap-2 px-4 lg:px-8">
         <div className="flex items-center gap-6">
           <button
             aria-label="Shuffle"
@@ -110,7 +119,7 @@ export default function PlayerBar() {
             aria-label={isPlaying ? "Pause" : "Play"}
             onClick={toggle}
             disabled={!current}
-            className="grid size-10 place-items-center rounded-full bg-accent disabled:opacity-40"
+            className="grid size-10 place-items-center rounded-full bg-accent text-on-accent disabled:opacity-40"
           >
             {isPlaying ? (
               <Pause size={20} fill="currentColor" />
@@ -141,24 +150,28 @@ export default function PlayerBar() {
 
         <div className="flex w-full items-center gap-3 font-mono text-body-s text-on-deck-soft">
           <span className="w-10 text-right">{formatTime(time)}</span>
-          <input
-            type="range"
-            aria-label="Seek"
-            min={0}
+          <GrooveSlider
+            label="Seek"
+            value={time}
             max={duration}
-            step="any"
-            value={Math.min(time, duration)}
-            disabled={!duration}
-            onChange={(e) => seek(Number(e.target.value))}
-            className="h-1 flex-1 cursor-pointer accent-accent disabled:cursor-default"
+            onChange={seek}
+            className="flex-1"
           />
           <span className="w-10">{formatTime(duration)}</span>
         </div>
       </div>
 
-      {/* Right: queue + volume */}
+      {/* Right: now playing + volume (the volume slider needs desktop width) */}
       <div className="flex flex-1 items-center justify-end gap-4 text-on-deck-soft">
-        <ListMusic size={20} strokeWidth={1.75} />
+        {current && (
+          <button
+            aria-label="Open now playing"
+            onClick={() => setNowPlayingOpen(true)}
+            className="hover:text-on-deck"
+          >
+            <Maximize2 size={18} strokeWidth={1.75} />
+          </button>
+        )}
         <button
           aria-label={muted ? "Unmute" : "Mute"}
           onClick={toggleMute}
@@ -170,15 +183,13 @@ export default function PlayerBar() {
             <Volume2 size={20} strokeWidth={1.75} />
           )}
         </button>
-        <input
-          type="range"
-          aria-label="Volume"
-          min={0}
+        <GrooveSlider
+          label="Volume"
+          value={muted ? 0 : volume}
           max={1}
           step={0.01}
-          value={muted ? 0 : volume}
-          onChange={(e) => setVolume(Number(e.target.value))}
-          className="h-1 w-24 cursor-pointer accent-accent"
+          onChange={setVolume}
+          className="hidden w-24 lg:block"
         />
       </div>
     </footer>

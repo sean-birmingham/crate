@@ -17,7 +17,7 @@ function describe(result: TopResult, tracks: PlayableTrack[]) {
         meta: "Artist",
         queue: tracks.filter((t) => t.artistId === result.artist.id),
         visual: (
-          <span className="grid size-28 place-items-center rounded-full bg-accent font-display text-display-l text-on-deck">
+          <span className="grid size-28 place-items-center rounded-full bg-accent font-display text-display-l text-on-accent">
             {initials(result.artist.name)}
           </span>
         ),

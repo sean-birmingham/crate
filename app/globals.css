@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* dark: utilities follow the data-theme attribute instead of the OS setting */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+/* can-hover: only on devices with a real pointer, so touch screens never hide things behind hover */
+@custom-variant can-hover (@media (hover: hover));
+
 @theme inline {
   --font-display: var(--font-fraunces);
   --font-sans: var(--font-dm-sans);
@@ -22,6 +27,7 @@
   --color-on-deck-soft: #a89b8c;
   --color-accent: #d4531c;
   --color-accent-soft: #f5d5bf;
+  --color-on-accent: #fbf7f0;
   --color-mustard: #e2a83a;
   --color-teal: #2e6e68;
   --color-oxblood: #8c2f2b;
@@ -51,4 +57,133 @@
   --text-label--line-height: 1.3;
   --text-label--letter-spacing: 0.1em;
   --text-label--font-weight: 500;
+
+  --animate-slide-up: slide-up 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+/* ---------- Dark mode: the same tokens, night-time values ---------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #1a1614;
+  --color-raised: #24201c;
+  --color-sunken: #131110;
+  --color-deck: #0c0a09;
+  --color-deck-raised: #2a2420;
+  --color-line: #3a322c;
+  --color-groove: #4a403a;
+  --color-ink: #f3ebdd;
+  --color-soft: #b9ac9d;
+  --color-faint: #8f8275;
+  --color-accent: #e8692f;
+  --color-accent-soft: #3a2117;
+  --color-on-accent: #160f0c;
+}
+
+/* ---------- Accent colors (orange is the default) ---------- */
+[data-accent="oxblood"] {
+  --color-accent: #9b3530;
+  --color-accent-soft: #efd3d0;
+}
+[data-accent="teal"] {
+  --color-accent: #2e6e68;
+  --color-accent-soft: #d3e5e1;
+}
+[data-accent="cobalt"] {
+  --color-accent: #2c4c96;
+  --color-accent-soft: #d6def2;
+}
+[data-accent="olive"] {
+  --color-accent: #6e7b3b;
+  --color-accent-soft: #e1e5cc;
+}
+
+[data-theme="dark"][data-accent="oxblood"] {
+  --color-accent: #d0605a;
+  --color-accent-soft: #351817;
+}
+[data-theme="dark"][data-accent="teal"] {
+  --color-accent: #4fa69c;
+  --color-accent-soft: #142d2a;
+}
+[data-theme="dark"][data-accent="cobalt"] {
+  --color-accent: #6f8fda;
+  --color-accent-soft: #172038;
+}
+[data-theme="dark"][data-accent="olive"] {
+  --color-accent: #a3b160;
+  --color-accent-soft: #23270f;
+}
+
+/* ---------- The groove slider (progress and volume) ---------- */
+@layer components {
+  .groove {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 16px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .groove:disabled {
+    cursor: default;
+  }
+  .groove:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+    border-radius: 9999px;
+  }
+  .groove::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      to right,
+      var(--color-accent) var(--progress, 0%),
+      var(--color-groove) var(--progress, 0%)
+    );
+  }
+  .groove::-moz-range-track {
+    height: 4px;
+    border-radius: 9999px;
+    background: linear-gradient(
+      to right,
+      var(--color-accent) var(--progress, 0%),
+      var(--color-groove) var(--progress, 0%)
+    );
+  }
+  .groove::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    border: 0;
+    border-radius: 9999px;
+    background: var(--color-on-deck);
+    transition: transform 0.15s;
+  }
+  .groove::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: 0;
+    border-radius: 9999px;
+    background: var(--color-on-deck);
+  }
+  .groove:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+  }
+  .groove:disabled::-webkit-slider-thumb,
+  .groove:disabled::-moz-range-thumb {
+    visibility: hidden;
+  }
 }

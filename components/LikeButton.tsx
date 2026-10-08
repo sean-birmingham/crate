@@ -11,7 +11,7 @@ type Props = {
   title: string;
   size?: number;
   hideUntilHover?: boolean;
-  idleClass?: string;
+  idleClass?: string; // color when not liked
 };
 
 export default function LikeButton({
@@ -32,8 +32,8 @@ export default function LikeButton({
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();
     startTransition(async () => {
-      setLiked(!liked);
-      await (kind === "album" ? toggleSavedAlbum(id) : toggleLike(id));
+      setLiked(!liked); // fill the heart immediately…
+      await (kind === "album" ? toggleSavedAlbum(id) : toggleLike(id)); // …while the server saves it
     });
   }
 
@@ -47,7 +47,7 @@ export default function LikeButton({
       }
       className={`${liked ? "text-accent" : idleClass} ${
         hideUntilHover && !liked
-          ? "opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+          ? "can-hover:opacity-0 can-hover:group-hover:opacity-100 focus-visible:opacity-100"
           : ""
       }`}
     >
