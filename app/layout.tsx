@@ -6,8 +6,12 @@ import Logo from "@/components/Logo";
 import MobileDock from "@/components/MobileDock";
 import PlayerBar from "@/components/PlayerBar";
 import Sidebar from "@/components/Sidebar";
+import Toaster from "@/components/Toaster";
+import KeyboardShortcuts from "@/components/player/KeyboardShortcuts";
+import MediaSession from "@/components/player/MediaSession";
 import NowPlaying from "@/components/player/NowPlaying";
 import { PlayerProvider } from "@/components/player/PlayerProvider";
+import QueuePanel from "@/components/player/QueuePanel";
 import { READ_ONLY } from "@/lib/config";
 import { getLibrary } from "@/lib/db";
 import { themeScript } from "@/lib/theme";
@@ -87,6 +91,14 @@ export default async function RootLayout({
             <PlayerBar />
             <MobileDock />
             <NowPlaying />
+
+            {/* No visible UI: system media controls and keyboard shortcuts */}
+            <MediaSession />
+            <KeyboardShortcuts />
+
+            {/* Overlays */}
+            <QueuePanel />
+            <Toaster />
           </PlayerProvider>
         </LibraryProvider>
       </body>

@@ -70,18 +70,11 @@ export default function TrackRow({
           {track.artistName}
         </Link>
       </div>
-
       <div className="flex items-center gap-3 sm:gap-4">
         {!READ_ONLY && (
-          <>
-            <LikeButton id={track.id} title={track.title} hideUntilHover />
-            <TrackMenu
-              trackId={track.id}
-              title={track.title}
-              playlistId={playlistId}
-            />
-          </>
+          <LikeButton id={track.id} title={track.title} hideUntilHover />
         )}
+        <TrackMenu track={track} playlistId={playlistId} />
       </div>
 
       <span className="text-right font-mono text-body-s text-soft">

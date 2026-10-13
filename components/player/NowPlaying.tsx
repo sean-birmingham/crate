@@ -11,6 +11,7 @@ import {
   Shuffle,
   SkipBack,
   SkipForward,
+  ListMusic,
 } from "lucide-react";
 import { READ_ONLY } from "@/lib/config";
 import { formatTime } from "@/lib/format";
@@ -43,6 +44,7 @@ function NowPlayingView() {
     toggleShuffle,
     cycleRepeat,
     setNowPlayingOpen,
+    setQueueOpen,
   } = usePlayer();
   const { time, duration } = useProgress();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -93,6 +95,13 @@ function NowPlayingView() {
             {source ?? current.albumTitle}
           </p>
         </div>
+        <button
+          onClick={() => setQueueOpen(true)}
+          aria-label="Open queue"
+          className="ml-auto text-on-deck hover:text-accent"
+        >
+          <ListMusic size={24} />
+        </button>
       </div>
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center gap-8 py-6 md:flex-row md:gap-16">

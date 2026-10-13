@@ -13,6 +13,7 @@ import {
   SkipForward,
   Volume2,
   VolumeX,
+  ListMusic,
 } from "lucide-react";
 import { READ_ONLY } from "@/lib/config";
 import { formatTime } from "@/lib/format";
@@ -37,6 +38,7 @@ export default function PlayerBar() {
     toggleShuffle,
     cycleRepeat,
     setNowPlayingOpen,
+    setQueueOpen,
   } = usePlayer();
   const { time, duration } = useProgress();
 
@@ -163,6 +165,15 @@ export default function PlayerBar() {
 
       {/* Right: now playing + volume (the volume slider needs desktop width) */}
       <div className="flex flex-1 items-center justify-end gap-4 text-on-deck-soft">
+        {current && (
+          <button
+            aria-label="Open queue"
+            onClick={() => setQueueOpen(true)}
+            className="hover:text-on-deck"
+          >
+            <ListMusic size={20} strokeWidth={1.75} />
+          </button>
+        )}
         {current && (
           <button
             aria-label="Open now playing"

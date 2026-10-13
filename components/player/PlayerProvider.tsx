@@ -1,6 +1,22 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { rememberAlbum } from "@/lib/recent";
+import {
+  DEFAULT_VOLUME,
+  getMuted,
+  getVolume,
+  saveMuted,
+  saveVolume,
+  subscribeVolume,
+} from "@/lib/volume";
 import type { PlayableTrack } from "@/lib/types";
 
 type Repeat = "off" | "all" | "one";
@@ -18,6 +34,8 @@ type Player = {
   muted: boolean;
   nowPlayingOpen: boolean;
   setNowPlayingOpen: (open: boolean) => void;
+  queueOpen: boolean;
+  setQueueOpen: (open: boolean) => void;
   play: (queue: PlayableTrack[], startIndex?: number, source?: string) => void;
   jumpTo: (index: number) => void;
   toggle: () => void;
@@ -28,6 +46,10 @@ type Player = {
   toggleMute: () => void;
   toggleShuffle: () => void;
   cycleRepeat: () => void;
+  playNext: (track: PlayableTrack) => void;
+  addToQueue: (track: PlayableTrack) => void;
+  removeFromQueue: (position: number) => void;
+  clearUpcoming: () => void;
 };
 
 const PlayerContext = createContext<Player | null>(null);
@@ -49,9 +71,16 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [original, setOriginal] = useState<PlayableTrack[] | null>(null); // unshuffled order; null = shuffle off
   const [repeat, setRepeat] = useState<Repeat>("off");
-  const [volume, setVolumeState] = useState(0.8);
-  const [muted, setMuted] = useState(false);
   const [nowPlayingOpen, setNowPlayingOpen] = useState(false);
+  const [queueOpen, setQueueOpen] = useState(false);
+
+  // Saved in this browser (lib/volume.ts). The server always renders the default.
+  const volume = useSyncExternalStore(
+    subscribeVolume,
+    getVolume,
+    () => DEFAULT_VOLUME
+  );
+  const muted = useSyncExternalStore(subscribeVolume, getMuted, () => false);
 
   const current = queue[index] ?? null;
   const isShuffled = original !== null;
@@ -63,13 +92,18 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     audio.muted = muted;
   }, [volume, muted]);
 
-  function load(newQueue: PlayableTrack[], newIndex: number) {
+  // autoplay = false loads a song paused (used when you queue something while nothing is playing).
+  function load(newQueue: PlayableTrack[], newIndex: number, autoplay = true) {
     const audio = audioRef.current;
-    if (!audio || !newQueue[newIndex]) return;
+    const track = newQueue[newIndex];
+    if (!audio || !track) return;
     setQueue(newQueue);
     setIndex(newIndex);
-    audio.src = newQueue[newIndex].src;
-    audio.play().catch(() => {});
+    audio.src = track.src;
+    if (autoplay) {
+      audio.play().catch(() => {});
+      rememberAlbum(track.albumId);
+    }
   }
 
   function toggle() {
@@ -124,8 +158,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
   }
 
   function setVolume(value: number) {
-    setVolumeState(value);
-    if (value > 0) setMuted(false);
+    saveVolume(value);
+    if (value > 0 && muted) saveMuted(false);
   }
 
   function toggleShuffle() {
@@ -155,6 +189,42 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     setRepeat((r) => (r === "off" ? "all" : r === "all" ? "one" : "off"));
   }
 
+  // Put a song straight after the current one ("Play next") or at the end of the queue ("Add to queue").
+  function enqueue(track: PlayableTrack, playNext: boolean) {
+    if (!current) {
+      setSource(null);
+      return load([track], 0, false);
+    }
+    const insert = (list: PlayableTrack[], at: number) => [
+      ...list.slice(0, at),
+      track,
+      ...list.slice(at),
+    ];
+    setQueue(insert(queue, playNext ? index + 1 : queue.length));
+    // While shuffled, add it to the original order too, so turning shuffle off keeps it.
+    if (original) {
+      const afterCurrent = original.findIndex((t) => t.id === current.id) + 1;
+      setOriginal(insert(original, playNext ? afterCurrent : original.length));
+    }
+  }
+
+  // Only songs after the current one can be removed.
+  function removeFromQueue(position: number) {
+    const track = queue[position];
+    if (position <= index || !track) return;
+    setQueue(queue.filter((_, i) => i !== position));
+    if (original) {
+      const at = original.indexOf(track);
+      setOriginal(original.filter((_, i) => i !== at));
+    }
+  }
+
+  function clearUpcoming() {
+    const kept = queue.slice(0, index + 1);
+    setQueue(kept);
+    if (original) setOriginal(kept);
+  }
+
   return (
     <PlayerContext
       value={{
@@ -170,6 +240,8 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         muted,
         nowPlayingOpen,
         setNowPlayingOpen,
+        queueOpen,
+        setQueueOpen,
         play,
         jumpTo,
         toggle,
@@ -177,9 +249,13 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
         previous,
         seek,
         setVolume,
-        toggleMute: () => setMuted((m) => !m),
+        toggleMute: () => saveMuted(!muted),
         toggleShuffle,
         cycleRepeat,
+        playNext: (track) => enqueue(track, true),
+        addToQueue: (track) => enqueue(track, false),
+        removeFromQueue,
+        clearUpcoming,
       }}
     >
       {children}

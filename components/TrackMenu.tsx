@@ -1,18 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
+import { ListEnd, ListStart, MoreHorizontal, Plus, Trash2 } from "lucide-react";
 import {
   addToPlaylist,
   createPlaylist,
   removeFromPlaylist,
 } from "@/lib/actions";
+import { READ_ONLY } from "@/lib/config";
+import { showToast } from "@/lib/toast";
+import type { PlayableTrack } from "@/lib/types";
 import { useLibrary } from "./LibraryProvider";
+import { usePlayer } from "./player/PlayerProvider";
 
-type Props = { trackId: string; title: string; playlistId?: string };
+type Props = { track: PlayableTrack; playlistId?: string };
 
-export default function TrackMenu({ trackId, title, playlistId }: Props) {
+export default function TrackMenu({ track, playlistId }: Props) {
   const { playlists } = useLibrary();
+  const { playNext, addToQueue } = usePlayer();
   const [open, setOpen] = useState(false);
   const [, startTransition] = useTransition();
   const ref = useRef<HTMLDivElement>(null);
@@ -34,10 +39,24 @@ export default function TrackMenu({ trackId, title, playlistId }: Props) {
     };
   }, [open]);
 
-  function run(action: () => Promise<unknown>) {
+  // The queue lives in the browser, so these work instantly, even in the read-only demo.
+  function queue(where: "next" | "end") {
+    setOpen(false);
+    if (where === "next") {
+      playNext(track);
+      showToast(`“${track.title}” will play next`);
+    } else {
+      addToQueue(track);
+      showToast(`Added “${track.title}” to the queue`);
+    }
+  }
+
+  // Playlist changes are saved on the server; the toast appears once they're done.
+  function run(action: () => Promise<unknown>, done: string) {
     setOpen(false);
     startTransition(async () => {
       await action();
+      showToast(done);
     });
   }
 
@@ -48,7 +67,7 @@ export default function TrackMenu({ trackId, title, playlistId }: Props) {
       onDoubleClick={(e) => e.stopPropagation()}
     >
       <button
-        aria-label={`More options for ${title}`}
+        aria-label={`More options for ${track.title}`}
         aria-expanded={open}
         onClick={() => setOpen(!open)}
         className={`text-faint hover:text-ink ${
@@ -65,30 +84,57 @@ export default function TrackMenu({ trackId, title, playlistId }: Props) {
           role="menu"
           className="absolute right-0 top-full z-20 mt-2 w-60 max-w-[calc(100vw-2rem)] rounded-xl border border-line bg-raised p-1.5 shadow-[0_12px_32px_-8px_rgb(0_0_0/0.3)]"
         >
-          <p className="px-3 pb-1 pt-2 font-mono text-label uppercase text-faint">
-            Add to playlist
-          </p>
-          <MenuItem onClick={() => run(() => createPlaylist([trackId]))}>
-            <Plus size={16} /> New playlist
+          <MenuItem onClick={() => queue("next")}>
+            <ListStart size={16} /> Play next
           </MenuItem>
-          {playlists.map((p) => (
-            <MenuItem
-              key={p.id}
-              onClick={() => run(() => addToPlaylist(p.id, trackId))}
-            >
-              {p.name}
-            </MenuItem>
-          ))}
-          {playlistId && (
+          <MenuItem onClick={() => queue("end")}>
+            <ListEnd size={16} /> Add to queue
+          </MenuItem>
+
+          {!READ_ONLY && (
             <>
               <div className="my-1 h-px bg-line" />
+              <p className="px-3 pb-1 pt-2 font-mono text-label uppercase text-faint">
+                Add to playlist
+              </p>
               <MenuItem
                 onClick={() =>
-                  run(() => removeFromPlaylist(playlistId, trackId))
+                  run(
+                    () => createPlaylist([track.id]),
+                    "Added to a new playlist"
+                  )
                 }
               >
-                <Trash2 size={16} /> Remove from this playlist
+                <Plus size={16} /> New playlist
               </MenuItem>
+              {playlists.map((p) => (
+                <MenuItem
+                  key={p.id}
+                  onClick={() =>
+                    run(
+                      () => addToPlaylist(p.id, track.id),
+                      `Added to ${p.name}`
+                    )
+                  }
+                >
+                  {p.name}
+                </MenuItem>
+              ))}
+              {playlistId && (
+                <>
+                  <div className="my-1 h-px bg-line" />
+                  <MenuItem
+                    onClick={() =>
+                      run(
+                        () => removeFromPlaylist(playlistId, track.id),
+                        "Removed from this playlist"
+                      )
+                    }
+                  >
+                    <Trash2 size={16} /> Remove from this playlist
+                  </MenuItem>
+                </>
+              )}
             </>
           )}
         </div>

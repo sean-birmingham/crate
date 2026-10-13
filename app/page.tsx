@@ -1,5 +1,6 @@
 import AlbumCard from "@/components/AlbumCard";
 import Greeting from "@/components/Greeting";
+import RecentlyPlayed from "@/components/RecentlyPlayed";
 import { getAlbums } from "@/lib/db";
 import { cardGrid } from "@/lib/ui";
 
@@ -9,6 +10,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col gap-8 md:gap-10">
       <Greeting />
+      <RecentlyPlayed albums={albums} />
       <section className="flex flex-col gap-5">
         <h2 className="font-display text-heading-m">Fresh in the crate</h2>
         <ul className={cardGrid}>
